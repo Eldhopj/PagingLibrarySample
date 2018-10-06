@@ -5,7 +5,7 @@ import android.arch.paging.DataSource;
 import android.arch.paging.PageKeyedDataSource;
 
 import in.eldhopj.paginglibrarysample.ModelClasses.Item;
-
+/**A DataSource.Factory is responsible for creating a DataSource.*/
 public class StackItemDataSourceFactory extends DataSource.Factory {
     private static final String TAG = "StackItemDataSourceFact";
 

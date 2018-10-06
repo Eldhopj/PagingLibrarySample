@@ -19,9 +19,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static in.eldhopj.paginglibrarysample.StackItemConfig.FIRST_PAGE;
-import static in.eldhopj.paginglibrarysample.StackItemConfig.PAGE_SIZE;
-import static in.eldhopj.paginglibrarysample.StackItemConfig.SITE_NAME;
+import static in.eldhopj.paginglibrarysample.Utils.StackItemConfig.FIRST_PAGE;
+import static in.eldhopj.paginglibrarysample.Utils.StackItemConfig.PAGE_SIZE;
+import static in.eldhopj.paginglibrarysample.Utils.StackItemConfig.SITE_NAME;
 
 /**Choose the correct data source according to the API @See <a href https://developer.android.com/topic/libraries/architecture/paging/data#choose-data-source-type/>
  * Here we are using paged keyed data source since we get the data as page number*/
@@ -30,15 +30,18 @@ public class StackItemDataSource extends PageKeyedDataSource<Integer,Item> {
 
     private List<Item> mItemList;
 
+
     /**it will call once and it will load the initial data*/
     @Override
     public void loadInitial(@NonNull LoadInitialParams<Integer> params, @NonNull final LoadInitialCallback<Integer, Item> callback) {
+
+
         Call<StackOverflow> call = RetrofitClient.getInstance().getApi().getAnswers(FIRST_PAGE,PAGE_SIZE,SITE_NAME);
         call.enqueue(new Callback<StackOverflow>() {
             @Override
             public void onResponse(Call<StackOverflow> call, Response<StackOverflow> response) {
                 if (!response.isSuccessful()) { // Prevents error like 404
-                    Log.d(TAG, "onResponse: "+response.code());
+
                     return;
                 }
                 mItemList = new ArrayList<>();//Inside this list item we get all our values
@@ -55,7 +58,7 @@ public class StackItemDataSource extends PageKeyedDataSource<Integer,Item> {
 
             @Override
             public void onFailure(Call<StackOverflow> call, Throwable t) {
-
+                Log.d(TAG, "onFailure: "+t.getLocalizedMessage());
             }
         });
     }
@@ -64,6 +67,7 @@ public class StackItemDataSource extends PageKeyedDataSource<Integer,Item> {
     /**@param params from here we get the page number*/
     @Override
     public void loadBefore(@NonNull final LoadParams<Integer> params, @NonNull final LoadCallback<Integer, Item> callback) {
+
         Call<StackOverflow> call = RetrofitClient.getInstance().getApi().getAnswers
                 (params.key, // Get the page key
                 PAGE_SIZE,
@@ -72,7 +76,6 @@ public class StackItemDataSource extends PageKeyedDataSource<Integer,Item> {
             @Override
             public void onResponse(Call<StackOverflow> call, Response<StackOverflow> response) {
                 if (!response.isSuccessful()) { // Prevents error like 404
-                    Log.d(TAG, "onResponse: "+response.code());
                     return;
                 }
                 Integer Page;
@@ -91,13 +94,11 @@ public class StackItemDataSource extends PageKeyedDataSource<Integer,Item> {
                         mItemList, // Pass the list items
                         Page // Adjacent page Page
                 );
-
-
             }
 
             @Override
             public void onFailure(Call<StackOverflow> call, Throwable t) {
-
+                Log.d(TAG, "onFailure: "+t.getLocalizedMessage());
             }
         });
     }
@@ -105,6 +106,7 @@ public class StackItemDataSource extends PageKeyedDataSource<Integer,Item> {
     /** Load data when we scroll down, ie; fetch from next page*/
     @Override
     public void loadAfter(@NonNull final LoadParams<Integer> params, @NonNull final LoadCallback<Integer, Item> callback) {
+
         Call<StackOverflow> call = RetrofitClient.getInstance().getApi().getAnswers
                 (params.key, // Get the page key
                         PAGE_SIZE,
@@ -113,7 +115,6 @@ public class StackItemDataSource extends PageKeyedDataSource<Integer,Item> {
             @Override
             public void onResponse(Call<StackOverflow> call, Response<StackOverflow> response) {
                 if (!response.isSuccessful()) { // Prevents error like 404
-                    Log.d(TAG, "onResponse: "+response.code());
                     return;
                 }
 
@@ -139,7 +140,7 @@ public class StackItemDataSource extends PageKeyedDataSource<Integer,Item> {
 
             @Override
             public void onFailure(Call<StackOverflow> call, Throwable t) {
-
+                Log.d(TAG, "onFailure: "+t.getLocalizedMessage());
             }
         });
     }

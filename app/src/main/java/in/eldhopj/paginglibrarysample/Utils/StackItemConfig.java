@@ -1,4 +1,4 @@
-package in.eldhopj.paginglibrarysample;
+package in.eldhopj.paginglibrarysample.Utils;
 
 public class StackItemConfig {
     public static final int PAGE_SIZE = 50;

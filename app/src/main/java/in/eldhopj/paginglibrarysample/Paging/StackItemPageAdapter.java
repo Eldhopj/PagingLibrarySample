@@ -21,7 +21,9 @@ import in.eldhopj.paginglibrarysample.R;
 public class StackItemPageAdapter extends PagedListAdapter<Item,StackItemPageAdapter.ViewHolder> {
 
     private Context mCtx;
-    Item listItem;
+
+    private static final int TYPE_PROGRESS = 0;
+    private static final int TYPE_ITEM = 1;
 
     /**Create a constructor*/
     public StackItemPageAdapter(Context mCtx) {
@@ -29,7 +31,7 @@ public class StackItemPageAdapter extends PagedListAdapter<Item,StackItemPageAda
         this.mCtx = mCtx;
     }
 
-    /**diffCallback helps us to determine whether 2 objects or 2 list objects are same or not*/
+    /**DiffUtil as a parameter to calculate data differences and do all the updates for you*/
     private static  DiffUtil.ItemCallback <Item>  DIFF_CALLBACK =
             new DiffUtil.ItemCallback<Item>() {
                 @Override
@@ -53,7 +55,7 @@ public class StackItemPageAdapter extends PagedListAdapter<Item,StackItemPageAda
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        listItem = getItem(position);
+        Item listItem = getItem(position);
         if (listItem != null) {
             holder.name.setText(listItem.getOwner().getDisplayName());
             Picasso.get().load(listItem.getOwner().getProfileImage()).into(holder.displayPic);
