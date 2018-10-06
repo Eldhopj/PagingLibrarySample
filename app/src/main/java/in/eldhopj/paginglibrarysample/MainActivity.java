@@ -1,39 +1,50 @@
 package in.eldhopj.paginglibrarysample;
 /**When to use : Helps load data gradually if there is a huge set of data into recyclerView this saves a lot of bandwidth*/
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.arch.paging.PagedList;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
-import in.eldhopj.paginglibrarysample.ModelClasses.StackOverflow;
-import in.eldhopj.paginglibrarysample.Network.RetrofitClient;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import in.eldhopj.paginglibrarysample.ModelClasses.Item;
+import in.eldhopj.paginglibrarysample.Paging.StackItemPageAdapter;
+import in.eldhopj.paginglibrarysample.Paging.StackItemViewModel;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "MainActivity";
+    StackItemPageAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initRecyclerView();
 
-        Call <StackOverflow> call = RetrofitClient.getInstance().getApi().getAnswers(1,50,"stackoverflow");
-        call.enqueue(new Callback<StackOverflow>() {
+        //Making instance of view model
+        StackItemViewModel viewModel = ViewModelProviders.of(this)// to which activity lifecycle it is scoped to
+                .get(StackItemViewModel.class); //Getting instance of the particular view model class
+        viewModel.itemPagedList.observe(this, new Observer<PagedList<Item>>() {
             @Override
-            public void onResponse(Call<StackOverflow> call, Response<StackOverflow> response) {
-                if (!response.isSuccessful()) { // Prevents error like 404
-                    Toast.makeText(getApplicationContext(), "Code : " + response.code(), Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                StackOverflow stackResponse = response.body();
-                Toast.makeText(MainActivity.this, String.valueOf(stackResponse.getItems().size()), Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onFailure(Call<StackOverflow> call, Throwable t) {
-
+            public void onChanged(@Nullable PagedList<Item> items) {
+                adapter.submitList(items); /** Submitting new values into adapter*/
             }
         });
+    }
+
+    /**Initializing recyclerView*/
+    private void initRecyclerView(){
+        /**bind with xml*/
+        RecyclerView mRecyclerView = findViewById(R.id.recyclerView);
+        mRecyclerView.setHasFixedSize(true); // setting it to true allows some optimization to our view , avoiding validations when mRecyclerAdapter content changes
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL, false)); //it can be GridLayoutManager or StaggeredGridLayoutManager
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL)); // Divider decorations
+        adapter = new StackItemPageAdapter(this);
+        mRecyclerView.setAdapter(adapter);
     }
 }

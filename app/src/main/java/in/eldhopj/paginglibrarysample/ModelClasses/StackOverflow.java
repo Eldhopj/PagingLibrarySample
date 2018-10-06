@@ -28,51 +28,19 @@ public class StackOverflow {
     public StackOverflow() {
     }
 
-    /**
-     *
-     * @param hasMore
-     * @param quotaMax
-     * @param items
-     * @param quotaRemaining
-     */
-    public StackOverflow(List<Item> items, Boolean hasMore, Integer quotaMax, Integer quotaRemaining) {
-        super();
-        this.items = items;
-        this.hasMore = hasMore;
-        this.quotaMax = quotaMax;
-        this.quotaRemaining = quotaRemaining;
-    }
-
     public List<Item> getItems() {
         return items;
-    }
-
-    public void setItems(List<Item> items) {
-        this.items = items;
     }
 
     public Boolean getHasMore() {
         return hasMore;
     }
 
-    public void setHasMore(Boolean hasMore) {
-        this.hasMore = hasMore;
-    }
-
     public Integer getQuotaMax() {
         return quotaMax;
-    }
-
-    public void setQuotaMax(Integer quotaMax) {
-        this.quotaMax = quotaMax;
     }
 
     public Integer getQuotaRemaining() {
         return quotaRemaining;
     }
-
-    public void setQuotaRemaining(Integer quotaRemaining) {
-        this.quotaRemaining = quotaRemaining;
-    }
-
 }

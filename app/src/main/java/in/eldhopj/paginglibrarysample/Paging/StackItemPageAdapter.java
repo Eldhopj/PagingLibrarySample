@@ -1,4 +1,4 @@
-package in.eldhopj.paginglibrarysample;
+package in.eldhopj.paginglibrarysample.Paging;
 
 import android.arch.paging.PagedListAdapter;
 import android.content.Context;
@@ -13,19 +13,18 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import java.util.List;
-
 import in.eldhopj.paginglibrarysample.ModelClasses.Item;
+import in.eldhopj.paginglibrarysample.R;
 
-
-/**There are different kinds of paging adapters for different usages here we get data as per page so we use PagedListAdapter*/
-public class PageAdapter extends PagedListAdapter<Item,PageAdapter.ViewHolder> {
+/**Paging adapter loads data into recycler view
+ * There are different kinds of paging adapters for different usages here we get data as per page so we use PagedListAdapter*/
+public class StackItemPageAdapter extends PagedListAdapter<Item,StackItemPageAdapter.ViewHolder> {
 
     private Context mCtx;
-    private List<Item> mListItems; // List
+    Item listItem;
 
     /**Create a constructor*/
-    protected PageAdapter(Context mCtx) {
+    public StackItemPageAdapter(Context mCtx) {
         super(DIFF_CALLBACK);
         this.mCtx = mCtx;
     }
@@ -54,27 +53,18 @@ public class PageAdapter extends PagedListAdapter<Item,PageAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Item listitem = mListItems.get(position);
-        if (listitem != null) {
-            holder.name.setText(listitem.getOwner().getDisplayName());
-            Picasso.get().load(listitem.getOwner().getProfileImage()).into(holder.displayPic);
+        listItem = getItem(position);
+        if (listItem != null) {
+            holder.name.setText(listItem.getOwner().getDisplayName());
+            Picasso.get().load(listItem.getOwner().getProfileImage()).into(holder.displayPic);
         }
-    }
-
-    @Override
-    public int getItemCount() { // return the size of the list view , NOTE : this must be a fast process
-        if (mListItems == null) {
-            return 0;
-        }
-        return mListItems.size();
     }
 
     /**Create an inner class ViewHolder which extends RecyclerView.ViewHolder*/
     class ViewHolder extends RecyclerView.ViewHolder {
-
         TextView name;
         ImageView displayPic;
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.userName);
             displayPic = itemView.findViewById(R.id.displayPic);
